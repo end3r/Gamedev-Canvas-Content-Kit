@@ -1,0 +1,20 @@
+body {
+	width: 650px;
+	margin: 0 auto;
+	font-size: 16px;
+	line-height: 24px;
+}
+a {
+	color: #0095DD;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+dt {
+	font-weight: bold;
+}
+h2:before {
+	content: "‣ ";
+	color: #0095DD;
+}
