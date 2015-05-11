@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Article 06: Build the brick field</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+
+<h1>Gamedev Canvas Content Kit</h1>
+<h2>Article 06: Build the brick field</h2>
+
+<p>After modifying the gameplay mechanics we now are able to lose — this is great as it means the game is finally feeling more like a game. However, it will quickly get boring if all you do is bounce the ball off the walls and the paddle. What a breakout game really needs is some bricks to destroy with the ball, and this is what we'll create now!</p>
+
+<h3>Setting up the brick variables</h3>
+
+<p>The overall aim of this lesson is to render a few lines of bricks, using a nested loop that works through a two-dimensional array. First however we need to set up some variables to define information about the bricks such as their width and height, how many rows and columns, etc. Add the following lines to your code, below the rest of your variables:</p>
+
+<pre class="brush: js">
+var brickRowCount = 5;
+var brickColumnCount = 3;
+var brickWidth = 75;
+var brickHeight = 20;
+var brickPadding = 10;
+var brickOffsetTop = 30;
+var brickOffsetLeft = 30;</pre>
+
+<p>Here we've defined the number of rows and columns of bricks we will draw, their width and height, the padding between the bricks so they won't touch with each other and a top and left offset so they won't start being drawn right from the edge of the Canvas.</p>
+
+<p>We will hold all our bricks in a two-dimensional array: it will contain the brick columns (c), which in turn will contain the brick rows (r), which in turn will each contain an object containing the <code>x</code> and <code>y</code> position to paint each brick on the screen. Add the following just below your variables:</p>
+
+<pre class="brush: js">
+var bricks = [];
+for(c=0; c&lt;brickColumnCount; c++) {
+    bricks[c] = [];
+    for(r=0; r&lt;brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0 };
+    }
+}</pre>
+
+<p>The code above will loop through the rows and columns and create the new bricks; note that the brick objects will also be used for collision detection purposes later.</p>
+
+<h3>Brick drawing logic</h3>
+
+<p>Now let's create a function to loop through all the bricks in the array and draw them on the screen. Our code might look like this:</p>
+
+<pre class="brush: js">
+function drawBricks() {
+    for(c=0; c&lt;brickColumnCount; c++) {
+        for(r=0; r&lt;brickRowCount; r++) {
+            bricks[c][r].x = 0;
+            bricks[c][r].y = 0;
+            ctx.beginPath();
+            ctx.rect(0, 0, brickWidth, brickHeight);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+}</pre>
+
+<p>Again, we're looping through the rows and columns to set the <code>x</code> and <code>y</code> position of each brick, and we're also painting a brick on the Canvas — size <code>brickWidth</code> x <code>brickHeight</code> — with each loop iteration. The problem is that we're painting them all in one place, at&nbsp;coordinates <code>(0,0)</code>. What we need to do is include some calculations that will work out the <code>x</code> and <code>y</code> position of each brick for each loop iteration:</p>
+
+<pre class="brush: js">
+var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
+var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;</pre>
+
+<p>Each <code>brickX</code> position is worked out as&nbsp;<code>brickWidth</code> + <code>brickPadding</code>, multiplied by the row number, <code>r</code>, plus the <code>brickOffsetLeft</code>; the logic for the brickY is identical except that it uses the values for column number, <code>c</code>, <code>brickHeight</code>, and <code>brickOffsetTop</code>. Thanks to these every single brick can be placed in its correct place row and column, with padding between each brick, drawn at an offset from the left and top canvas edges.</p>
+
+<p>The final version of the <code>drawBricks()</code> function, after assigning the <code>brickX</code> and <code>brickY</code> values as the coordinates instead of <code>(0,0)</code> each time, will look like this — add this into your code below the <code>drawPaddle()</code> function:</p>
+
+<pre class="brush: js">
+function drawBricks() {
+    for(c=0; c&lt;brickColumnCount; c++) {
+        for(r=0; r&lt;brickRowCount; r++) {
+            var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
+            var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+}</pre>
+
+<h3>Actually drawing the bricks</h3>
+
+<p>The last thing to do in this lesson is to add a call to <code>drawBricks()</code> somewhere in the <code>draw()</code> function, preferably at the beginning, between the clearing of the Canvas and drawing the ball. Add the following just above the <code>drawBall()</code> call:</p>
+
+<pre class="brush: js">
+drawBricks();
+</pre>
+
+<h3>Compare your code</h3>
+
+<p>At this point, the game has got a little more interesting again:</p>
+
+<p><iframe width="100%" height="320" src="https://jsfiddle.net/end3r/5e24k7ho/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
+
+<div class="note">
+<p>Exercise: try changing the number of bricks in a row or a column, or their positions.</p>
+</div>
+
+<h3>Next steps</h3>
+
+<p>So now we have bricks! But the ball isn't interacting with them at all — we'll change that as we continue to the seventh chapter: <a href="/tutorial/articles/article07.html">Collision detection</a>.</p>
+
+</body>
+</html>

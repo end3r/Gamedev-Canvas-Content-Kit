@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Article 05: Game over</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+
+<h1>Gamedev Canvas Content Kit</h1>
+<h2>Article 05: Game over</h2>
+
+<p>It's fun to watch the ball bouncing off the walls and be able to move the paddle around, but other than that the game does nothing and doesn't have any progression or end goal. It would be good from the gameplay point of view to be able to lose. The logic behind losing in breakout is simple: if you miss the ball with the paddle and let it reach the bottom edge of the screen, then it's game over.</p>
+
+<h3>Implementing game over</h3>
+
+<p>Let's try to implement game over in our game — here's the piece of code from the third lesson where we made the ball bounce off the walls:</p>
+
+<pre class="brush: js">
+if(x + dx &gt; canvas.width-ballRadius || x + dx &lt; ballRadius) {
+    dx = -dx;
+}
+
+if(y + dy &gt; canvas.height-ballRadius || y + dy &lt; ballRadius) {
+    dy = -dy;
+}</pre>
+
+<p>Instead of allowing the ball to bounce off all four walls, let's only allow three — left, top and right. Hitting the bottom wall will end the game. First let's focus on the top <code>if</code> statement, splitting it in two like so. Replace the top <code>if</code> statement with the following now:</p>
+
+<pre class="brush: js">
+if(x + dx &lt; ballRadius) {
+    dx = -dx;
+} else if(x + dx &gt; canvas.width-ballRadius) {
+    dx = -dx;
+}</pre>
+
+<p>Let's do the same for the bottom if statement. This works basically the same except that the if else block (collision with the bottom edge of the canvas) will trigger our "game over" state. For now we'll keep it simple, showing an alert message and restarting the game by reloading the page. Replace the second if statement with the following:</p>
+
+<pre class="brush: js">
+if(y + dy &lt; ballRadius) {
+    dy = -dy;
+} else if(y + dy &gt; canvas.height-ballRadius) {
+    alert("GAME OVER");
+    document.location.reload();
+}</pre>
+
+<h3>Letting the paddle hit the ball</h3>
+
+<p>The last thing to do in this lesson is to create some kind of collision detection between the ball and the paddle, so it can bounce off it and get back into the play area. The easiest thing to do is to check whether the center of the ball is between the left and right edges of the paddle. Update the last but of code you modified again, to the following:</p>
+
+<pre class="brush: js">
+if(y + dy &lt; ballRadius) {
+    dy = -dy;
+} else if(y + dy &gt; canvas.height-ballRadius) {
+    if(x &gt; paddleX &amp;&amp; x &lt; paddleX + paddleWidth) {
+        dy = -dy;
+    }
+    else {
+        alert("GAME OVER");
+        document.location.reload();
+    }
+}</pre>
+
+<p>If the ball hits the bottom edge of the Canvas we're checking whether it is touching the paddle: if yes, then it bounces off just like you'd expect; if not then the game is over as before.</p>
+
+<h3>Compare your code</h3>
+
+<p>Here's the working code for you to compare yours against:</p>
+
+<p><iframe width="100%" height="320" src="https://jsfiddle.net/end3r/z4zy79fo/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
+
+<div class="note">
+<p><strong>Exercise</strong>: make the ball move faster when it hits the paddle.</p>
+</div>
+
+<h3>Next steps</h3>
+
+<p>We're doing quite well so far — our game is starting to feel a lot more worth playing now you can lose! But it is still missing something. Let's continue to the sixth chapter — <a href="/tutorial/articles/article06.html">Build the brick field</a> — and create some bricks for the ball to destroy.</p>
+
+</body>
+</html>

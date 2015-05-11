@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Article 09: Mouse controls</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+
+<h1>Gamedev Canvas Content Kit</h1>
+<h2>Article 09: Mouse controls</h2>
+
+<p>The game itself is actually finished, so let's work on polishing it up. We have already added keyboard controls, but we could easily add mouse controls too.</p>
+
+<h3>Listening for mouse movement</h3>
+
+<p>Listening for mouse movement is even easier than listening for key presses: all we need is the listener for the <code>mousemove</code> event. Add the following line near the bottom of your code, just above the <code>setInterval()</code> line:</p>
+
+<pre class="brush: js">
+document.addEventListener("mousemove", mouseMoveHandler, false);</pre>
+
+<h3>Anchoring the paddle movement to the mouse movement</h3>
+
+<p>We can update the paddle position based on the pointer coordinates — the following handler function will do&nbsp;exactly that. Add the following function to your code, below the previous line you added:</p>
+
+<pre class="brush: js">
+function mouseMoveHandler(e) {
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX &gt; 0 &amp;&amp; relativeX &lt; canvas.width) {
+        paddleX = relativeX - paddleWidth/2;
+    }
+}</pre>
+
+<p>In this function we first work out a <code>relativeX</code> value, which is equal to the horizontal mouse position in the viewport (<code>e.clientX</code>) minus the distance between the left edge of the canvas and left edge of the viewport (<code>canvas.offsetLeft</code>) — effectively this is equal to the distance between the canvas left edge and the mouse pointer. If the relative X pointer position is greater than zero and lower than the Canvas width, the pointer is within the Canvas boundaries, and the <code>paddleX</code> position (anchored on the left edge of the paddle) is set to the <code>relativeX</code> value minus half the width of the paddle, so that the movement will actually be relative to the middle of the paddle.</p>
+
+<p>The paddle will now follow the position of the mouse cursor, but since we're restricting the movement to the size of the Canvas, it won't disappear completely off either side.</p>
+
+<h3>Compare your code</h3>
+
+<p>This is the latest state of the code to compare against:</p>
+
+<p><iframe width="100%" height="320" src="https://jsfiddle.net/end3r/L3gngab5/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
+
+<div class="summary">
+<p>Exercise: adjust the boundaries of the paddle movement, so the whole paddle will be visible on both edges of the Canvas instead of only half of it.</p>
+</div>
+
+<h3>Next steps</h3>
+
+<p>Now we've got a complete game we'll finish our series of lessons with some more small tweaks — <a href="/tutorial/articles/article10.html">Finishing up</a>.</p>
+
+</body>
+</html>

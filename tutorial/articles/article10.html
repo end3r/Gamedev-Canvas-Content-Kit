@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Article 10: Finishing up</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+
+<h1>Gamedev Canvas Content Kit</h1>
+<h2>Article 10: Finishing up</h2>
+
+<p>There's always room for improvements in any grame we write. We can, for example, offer more than one life to the player. They&nbsp;could make a mistake or two and still be able to finish the game. We could also improve our code rendering.</p>
+
+<h3>Giving the player some lives</h3>
+
+<p>Implementing lives is quite straightforward. Let's first add a variable to store the number of lives, in the same place as our other variables:</p>
+
+<pre class="brush: js">
+var lives = 3;</pre>
+
+<p>Drawing the life counter looks almost the same as drawing the score counter — add the following function to your code, below the <code>drawScore()</code> function:</p>
+
+<pre class="brush: js">
+function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+}</pre>
+
+<p>Instead of ending the game immediately, we will decrease the number of lives until they are no longer available. We can also reset the ball and the paddle positions when the player starts their next life. So, in the <code>draw()</code> function replace the following two lines:</p>
+
+<pre class="brush: js">
+alert("GAME OVER");
+document.location.reload();</pre>
+
+<p>With this slightly more complex logic:</p>
+
+<pre class="brush: js">
+lives--;
+if(!lives) {
+    alert("GAME OVER");
+    document.location.reload();
+}
+else {
+    x = canvas.width/2;
+    y = canvas.height-30;
+    dx = 2;
+    dy = -2;
+    paddleX = (canvas.width-paddleWidth)/2;
+}</pre>
+
+<p>Now, when the ball hits the bottom edge of the screen we're subtracting one life from the <code>lives</code> variable. If there are no lives left, the game is lost; if there are still some lives left, then the position of the ball and the paddle are reset, along with the movement of the ball.</p>
+
+<h3 id="Rendering_the_lives_display">Rendering the lives display</h3>
+
+<p>Now you need to add a call to <code>drawLives()</code> inside the <code>draw()</code> function&nbsp; add it below the <code>drawScore()</code> call.</p>
+
+<pre class="brush: js">
+drawLives();
+</pre>
+
+<h3>Improving rendering with requestAnimationFrame()</h3>
+
+<p>Now let's work on something not connected to the game mechanics, but to the way it is rendered. {{domxref("window.requestAnimationFrame", "requestAnimationFrame")}} helps the browser render the game better than the fixed framerate we currently have implemented using {{domxref("windowTimers.setInterval()", "setInterval()")}}. Replace the following line:</p>
+
+<pre class="brush: js">
+setInterval(draw, 10);</pre>
+
+<p>with simply:</p>
+
+<pre class="brush: js">
+draw();</pre>
+
+<p>Then, at the very bottom of the <code>draw()</code> function (just before the closing curly brace), add in the following line, which causes the <code>draw()</code> function to call itself over and over again:</p>
+
+<pre class="brush: js">
+requestAnimationFrame(draw);</pre>
+
+<p>The <code>draw()</code> function is now getting executed again and again within a <code>requestAnimationFrame()</code> loop, but instead of the fixed 10 milliseconds frame rate, we are giving control of the framerate back to the browser. It will sync the framerate accordingly and render the shapes only when needed. This produces a more efficient, smoother animation loop than the older <code>setInterval()</code> method.</p>
+
+<h3>Compare your code</h3>
+
+<p>That's all — the final version of the game is ready:</p>
+
+<p><iframe width="100%" height="320" src="https://jsfiddle.net/end3r/9temh0ta/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
+
+<div class="note">
+<p><strong>Exercise</strong>: change the number of lives and the angle the ball bounces off the paddle.</p>
+</div>
+
+<h3>Game over -&nbsp;for now!</h3>
+
+<p>You've finished all the lessons -&nbsp;congratulations! By this point you should already know the basics of canvas manipulation and the logic behind simple 2D games. Now is a good time to learn some frameworks and continue game development. You can check out the <a href="https://developer.mozilla.org/en-US/docs/Games/Workflows/HTML5_Gamedev_Phaser_Device_Orientation">Cyber Orb built in Phaser</a> tutorial or look through the <a href="https://developer.mozilla.org/en/docs/Games">Games section on MDN</a> for inspiration and more knowledge.</p>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Article 02: Move the ball</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+
+<h1>Gamedev Canvas Content Kit</h1>
+<h2>Article 02: Move the ball</h2>
+
+<p>You already know how to draw a ball from working through the previous article, so now let's make it move. Technically, we will be painting the ball on the screen, clearing it and then painting it again in a slightly different position every frame to make the impression of movement — just like how movement works with the movies.</p>
+
+<h3>Defining a drawing loop</h3>
+
+<p>To keep constantly updating the canvas drawing on each frame, we need to define a drawing function that will run over and over again, with a different set of variable values each time to change sprite positions, etc. You can run a function over and over again using a JavaScript timing function such as <code>setInterval()</code> or <code>requestAnimationFrame()</code>.</p>
+
+<p>Delete all the JavaScript you currently have inside your HTML file except for the first two lines, and add the following below them. The <code>draw()</code> function will be executed within <code>setInterval</code> every 10 miliseconds:</p>
+
+<pre class="brush: js">
+function draw() {
+    // drawing code
+}
+setInterval(draw, 10);</pre>
+
+<p>Thanks to the inifinite nature of <code>setInterval</code> the <code>draw()</code> function will be called every 10 milliseconds forever, or until we stop it. Now, let's draw the ball — add the following inside your <code>draw()</code> function:</p>
+
+<pre class="brush: js">
+ctx.beginPath();
+ctx.arc(50, 50, 10, 0, Math.PI*2);
+ctx.fillStyle = "#0095DD";
+ctx.fill();
+ctx.closePath();
+</pre>
+
+<p>Try your updated code now — the ball should be repainted on every frame.</p>
+
+<h3>Making it move</h3>
+
+<p>You won't notice the ball being repainted constantly at the moment, as it's not moving. Let's change that. First, instead of a hardcoded position at (50,50) we will define a starting point at the bottom center part of the Canvas in variables called <code>x</code> and <code>y</code>, then use those to define the position the circle is drawn at.</p>
+
+<p>First, add the following two lines above your <code>draw()</code> function, to define <code>x</code> and <code>y</code>:</p>
+
+<pre class="brush: js">
+var x = canvas.width/2;
+var y = canvas.height-30;
+</pre>
+
+<p>Next update the <code>draw()</code> function to use the x and y variables in the <code>arc()</code> method, as shown in the following highlighted line:</p>
+
+<pre class="brush: js; highlight:[3]">
+function draw() {
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI*2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+</pre>
+
+<p>Now comes the important part: we want to add a small value to <code>x</code> and <code>y</code> after every frame has been drawn to make it appear that the ball is moving. Let's define these small values as <code>dx</code> and <code>dy</code> and set their values to 2 and -2 respectively. Add the following below your x and y variable definitions:</p>
+
+<pre class="brush: js">
+var dx = 2;
+var dy = -2;
+</pre>
+
+<p>The last thing to do is to update <code>x</code> and <code>y</code> with our <code>dx</code> and <code>dy</code> variable on every frame, so the ball will be painted in the new position on every update. Add the following two new lines indicated below to your <code>draw()</code> function:</p>
+
+<pre class="brush: js; highlight:[7,8]">
+function draw() {
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI*2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+    x += dx;
+    y += dy;
+}</pre>
+
+<p>Save your code again and try it in your browser. This works ok, although it appears that the ball is leaving a trail behind it:</p>
+
+<p><img alt="" src="https://mdn.mozillademos.org/files/10430/ball-trail.png" style="display:block; height:320px; margin:0px auto; width:480px" /></p>
+
+<h3>Clearing the canvas before each frame</h3>
+
+<p>The ball is leaving a trail because we're painting a new circle on every frame without removing the previous one. Don't worry, because there's a method to clear canvas content: <code>clearRect()</code>. This method take four parameters: the x and y coordinates of the top left corner of a rectangle, and the x and y coordinates of the bottom right corner of a rectangle. The whole area covered by this rectangle will be cleared of any content previously painted there.</p>
+
+<p>Add the following highlighted new line to the <code>draw()</code> function:</p>
+
+<pre class="brush: js; highlight:[2]">
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI*2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+    x += dx;
+    y += dy;
+}
+</pre>
+
+<p>Save your code and try again, and this time you'll see the ball move without a trail. Every 10 milliseconds the canvas is cleared, the blue circle (our ball) will be drawn on a given position and the <code>x</code> and <code>y</code> values will be updated for the next frame.</p>
+
+<h3>Cleaning up our code</h3>
+
+<p>We will be adding more and more commands to the <code>draw()</code> function in the next few articles, so it's good to keep it as simple and clean as possible. Let's start by moving the ball drawing code to a separate function.</p>
+
+<p>Replace the existing draw() function with the following two functions:</p>
+
+<pre class="brush: js">
+function drawBall() {
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI*2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall();
+    x += dx;
+    y += dy;
+}</pre>
+
+<h3>Compare your code</h3>
+
+<p>You can check the finished code for this article for yourself in the live demo below, and play with it to understand better how it works:</p>
+
+<p><iframe width="100%" height="415" src="https://jsfiddle.net/end3r/3x5foxb1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
+
+<div class="summary">
+<p>Exercise: try changing the speed of the moving ball, or the direction it moves in.</p>
+</div>
+
+<h3>Next steps</h3>
+
+<p>We've drawn our ball and gotten it moving, but it keeps disappearing off the edge of the canvas. In the third chapter we'll explore how to make it <a href="/tutorial/articles/article03.html">bounce off the walls</a>.</p>
+
+</body>
+</html>

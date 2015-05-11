@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Article 08: Track the score and win</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+
+<h1>Gamedev Canvas Content Kit</h1>
+<h2>Article 08: Track the score and win</h2>
+
+<p>Destroying the bricks is really cool, but to be even more awesome we could award points for every brick we hi, and keep count of the total score.</p>
+
+<h3>Counting the score</h3>
+
+<p>If we can see our score throughout the game, eventually we can impress our friends. We will need a variable to record the score — add the following into your JavaScript, below the rest of your variables:</p>
+
+<pre class="brush: js">
+var score = 0;</pre>
+
+<p>We also need a <code>drawScore()</code> function, to create and update the score display — add the following below the <code>collisionDetection()</code> function:</p>
+
+<pre class="brush: js">
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score: "+score, 8, 20);
+}</pre>
+
+<p>Drawing text on a canvas is similar to drawing a shape. The font definition looks exactly like the one in CSS — we can set the size and font type in the <code>font()</code> method. Then we use <code>fillStyle()</code> to set the color of the font and <code>fillText()</code> to set the actual text that will be placed on the canvas, and where it will be placed. The first parameter is the text itself — here we are showing the current number of points — and the last two parameters are the coordinates where the text will be placed on the canvas.</p>
+
+<p>To actually award a score each time a brick is hit, we need to add a line to the <code>collisionDetection()</code> function to increment the value of the score variable each time a collision is detected. Add the following highlighted line to your code:</p>
+
+<pre class="brush: js; highlight:[9]">
+function collisionDetection() {
+    for(c=0; c&lt;brickColumnCount; c++) {
+        for(r=0; r&lt;brickRowCount; r++) {
+            var b = bricks[c][r];
+            if(b.status == 1) {
+                if(x &gt; b.x &amp;&amp; x &lt; b.x+brickWidth &amp;&amp; y &gt; b.y &amp;&amp; y &lt; b.y+brickHeight) {
+                    dy = -dy;
+                    b.status = 0;
+                    score++;
+                }
+            }
+        }
+    }
+}</pre>
+
+<p>Calling <code>drawScore()</code> from our <code>draw()</code> function keeps the score up to date with every new frame — add the following line inside <code>draw()</code>, just below the <code>drawPaddle()</code> call:</p>
+
+<pre class="brush: js">
+drawScore();</pre>
+
+<h3>Displaying a winning message when all bricks have been destroyed</h3>
+
+<p>Collecting the points works well, but we won't be adding them forever — what about when all the bricks have been destroyed?. It's the main purpose of the game after all, so we should display a winning message if all available points have been collected. Add the following highlighted section into your <code>collisionDetection()</code> function:</p>
+
+<pre class="brush: js; highlight:[10,11,12,13]">
+function collisionDetection() {
+    for(c=0; c&lt;brickColumnCount; c++) {
+        for(r=0; r&lt;brickRowCount; r++) {
+            var b = bricks[c][r];
+            if(b.status == 1) {
+                if(x &gt; b.x &amp;&amp; x &lt; b.x+brickWidth &amp;&amp; y &gt; b.y &amp;&amp; y &lt; b.y+brickHeight) {
+                    dy = -dy;
+                    b.status = 0;
+                    score++;
+                    if(score == brickRowCount*brickColumnCount) {
+                        alert("YOU WIN, CONGRATULATIONS!");
+                        document.location.reload();
+                    }
+                }
+            }
+        }
+    }
+}</pre>
+
+<p>Thanks to this we'll be able to actually win the game when we destroy all the bricks, which is quite important when it comes to games. The <code>document.location.reload()</code> function will then reload the page and start the game again once the alert button is clicked.</p>
+
+<h3>Compare your code</h3>
+
+<p>The latest code looks (and works) like this, for those who want to compare and contrast:</p>
+
+<p><iframe width="100%" height="320" src="https://jsfiddle.net/end3r/mvfkcydz/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
+
+<div class="note">
+<p><strong>Exercise</strong>: add more points per brick hit, print out the number of collected points in the end game alert box.</p>
+</div>
+
+<h3>Next steps</h3>
+
+<p>The game is looking pretty good at this point — in the next lesson we will widen the game's appeal by adding <a href="/tutorial/articles/article09.html">Mouse controls</a>.</p>
+
+</body>
+</html>

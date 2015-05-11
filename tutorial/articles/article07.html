@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Article 07: Collision detection</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+
+<h1>Gamedev Canvas Content Kit</h1>
+<h2>Article 07: Collision detection</h2>
+
+<p>We have the bricks painted on the screen already, but the game still isn't <em>that</em> interesting, as the ball goes through them — we need to think about adding collision detection, so it could bounce off the bricks and break them.</p>
+
+<p>It's our decision how to implement this of course, but it can be tough to calculate whether the ball is touching the rectangle or not — there are no helper functions in Canvas for this. For the sake of this tutorial we will do it in the easiest way possible — we will check if the center of the ball is colliding with any of the given bricks. This won't give a perfect result every time, and there are much more sophisticated ways to do collision detection, but this will work fine for teaching you the basic concepts.</p>
+
+<h3>A collision detection function</h3>
+
+<p>To kick this all off we want to create a collision detection function that will loop through all the bricks and compare every single one's position with the ball coordinates as each frame is drawn. For better readability of the code we will define the <code>b</code> variable for storing the brick object in every loop of the collision detection:</p>
+
+<pre class="brush: js">
+function collisionDetection() {
+    for(c=0; c&lt;brickColumnCount; c++) {
+        for(r=0; r&lt;brickRowCount; r++) {
+            var b = bricks[c][r];
+            // calculations
+        }
+    }
+}</pre>
+
+<p>If the center of the ball is inside the the coordinates of one of our bricks, we'll change the direction of the ball. For the center of the ball to be inside the brick, all four of the following statements need to be true:</p>
+
+<ul>
+ <li>The x position of the ball is greater than the x position of the brick.</li>
+ <li>The x position of the ball is less than the x position of the brick minus its width.</li>
+ <li>The y position of the ball is greater than the y position of the brick.</li>
+ <li>The y position of the ball is less than the y position of the brick minus its width.</li>
+</ul>
+
+<p>Let's write that down in code:</p>
+
+<pre class="brush: js">
+function collisionDetection() {
+    for(c=0; c&lt;brickColumnCount; c++) {
+        for(r=0; r&lt;brickRowCount; r++) {
+            var b = bricks[c][r];
+            if(x &gt; b.x &amp;&amp; x &lt; b.x+brickWidth &amp;&amp; y &gt; b.y &amp;&amp; y &lt; b.y+brickHeight) {
+                dy = -dy;
+            }
+        }
+    }
+}</pre>
+
+<p>Add the above block to your code, below the</p>
+
+<h3>Making the bricks disappear after they are hit</h3>
+
+<p>The above code will works as desired — the ball is changing its direction. The problem is that the bricks are staying where they are. We have to figure out a way to get rid of the ones we've already hit with the ball. We can do that by adding an extra parameter to indicate whether we want to paint each brick on the screen or not. In the part of the code where we initialize the bricks let's add a <code>status</code> property to each brick object. Update the following part of the code as indicated by the highlighted line:</p>
+
+<pre class="brush: js; highlight:[5]">
+var bricks = [];
+for(c=0; c&lt;brickColumnCount; c++) {
+    bricks[c] = [];
+    for(r=0; r&lt;brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0, status: 1 };
+    }
+}</pre>
+
+<p>Next we'll check the value of each brick's <code>status</code> property in the <code>drawBricks()</code> function before drawing it — if <code>status</code> is <code>1</code>, then draw it, but if it's <code>0</code>, then it was hit by the ball and we don't want it on the screen anymore. Update your <code>drawBricks()</code> function as follows:</p>
+
+<pre class="brush: js; highlight:[4,5,6,7,8,9,10,11,12,13,14]">
+function drawBricks() {
+    for(c=0; c&lt;brickColumnCount; c++) {
+        for(r=0; r&lt;brickRowCount; r++) {
+            if(bricks[c][r].status == 1) {
+                var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
+                var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+    }
+}</pre>
+
+<h3>Tracking and updating the status in the collision detection function</h3>
+
+<p>Now we need to involve the brick <code>status</code> property in the <code>collisionDetection()</code> function: if the brick is active (its status is <code>1</code>) we will check whether the collision happens; if a collision does occur we'll set the status of the given brick to <code>0</code> so it won't be painted on the screen. Update your <code>collisionDetection()</code> function as indicated below:</p>
+
+<pre class="brush: js; highlight:[5,6,7,8,9,10]">
+function collisionDetection() {
+    for(c=0; c&lt;brickColumnCount; c++) {
+        for(r=0; r&lt;brickRowCount; r++) {
+            var b = bricks[c][r];
+            if(b.status == 1) {
+                if(x &gt; b.x &amp;&amp; x &lt; b.x+brickWidth &amp;&amp; y &gt; b.y &amp;&amp; y &lt; b.y+brickHeight) {
+                    dy = -dy;
+                    b.status = 0;
+                }
+            }
+        }
+    }
+}</pre>
+
+<h3>Activating our collision detection</h3>
+
+<p>The last thing to do is to add a call to the <code>collisionDetection()</code> function to our main <code>draw()</code> function. Add the following line to the <code>draw()</code> function, just below the <code>drawPaddle()</code> call:</p>
+
+<pre class="brush: js">
+collisionDetection();
+</pre>
+
+<h3>Compare your code</h3>
+
+<p>The collision detection of the ball is now checked on every frame, with every brick. Now we can destroy bricks!</p>
+
+<p><iframe width="100%" height="320" src="https://jsfiddle.net/end3r/oyhmvo6e/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
+
+<div class="note">
+<p><strong>Exercise</strong>: change the color of the ball when it hits the brick.</p>
+</div>
+
+<h3>Next steps</h3>
+
+<p>We are definitely getting there now; let's move on! In the eighth chapter we will be looking at how to <a href="/tutorial/articles/article08.html">Track the score and win</a>.</p>
+
+</body>
+</html>
