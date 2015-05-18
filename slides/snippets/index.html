@@ -1,0 +1,1367 @@
+<!DOCTYPE HTML>
+<!-- <html lang="en-US"> -->
+<html lang="en-US" class="fade">
+<!-- 
+  ^ a class of "fade" makes slides fade smoothly into one another
+ -->
+<!-- <html lang="en-US" class="nonumbers"> -->
+<!-- 
+  If you want no numbers on the slides add a "nonumbers" class 
+  to the HTML element.
+  Adding a class of "fade" will make slides fade into another. 
+-->
+<head>
+  <meta charset="UTF-8">
+  <title>Build HTML5 Games in JavaScript</title>
+<!-- 
+  If you upload your slides to the web, ensure that you have 
+  a good title - this shows up in search results and social
+  media links
+ -->
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+  <link rel="stylesheet" href="themes/mozilla/styles/style.css">
+</head>
+<body class="list">
+  <header class="caption">
+    <h1>Build HTML5 Games in JavaScript</h1>
+    <p class="footer">
+      {Your name and details}
+    </p>
+  </header>
+  <aside class="talkdescription">
+    <p>This slide deck is using the shower system - roll over the previews to see the notes and click any slide to go into presentation mode. Then use keys to navigate. <button onclick="goFullScreen()">Go fullscreen</button></p>
+    <p class="abstract">
+      Learn how to build simple 2D HTML5 games in pure JavaScript and render them on Canvas.
+    </p>
+  </aside>
+
+<!-- 
+    Simply copy the whole block for each slide you want.
+  Special slides get extra classes. Each slide needs an ID 
+  to allow for bookmarking and target jumping.
+-->
+
+  <div id="cover" class="slide"><div>
+    <section>
+      <header>
+        <h2>Build HTML5 Games in JavaScript</h2>
+      </header>
+      <small class="byline">
+        {Firstname}, {Lastname}, {Conference}, {Location}, {date}
+      </small>
+      <footer class="notes">
+        This is a simple cover slide with an image in the middle
+      </footer>
+    </section>
+  </div></div>
+
+<!-- end slide block -->
+
+<!--
+  <div id="idid" class="slide"><div>
+    <section>
+      <header><h2>Title</h2></header>
+      <p>Lorem ipsum dolor sit amet.</p>
+      <footer class="notes">Notes</footer>
+    </section>
+  </div></div>
+-->
+
+  <div id="contents" class="slide"><div>
+    <section>
+      <header><h2>Table of Contents</h2></header>
+      <ol>
+        <li>Create the Canvas and draw on it</li>
+        <li>Move the ball</li>
+        <li>Bounce off the walls</li>
+        <li>Paddle and keyboard controls</li>
+        <li>Game over</li>
+        <li>Build the brick field</li>
+        <li>Collision detection</li>
+        <li>Track the score and win</li>
+        <li>Mouse controls</li>
+        <li>Finishing up</li>
+      </ol>
+      <footer class="notes">We're going to build a simple game that will implement the most important pieces like rendering images on screen, controlling the game with the input, collision detection, game over state and such.</footer>
+    </section>
+  </div></div>
+
+  <div id="breakout" class="slide"><div>
+    <section>
+      <header><h2>Breakout</h2></header>
+      <p><img src="img/mdn-breakout-gameplay.png" alt="Breakout gameplay" /></p>
+      <footer class="notes">Let's start with showing what we are going to build: a Breakout clone. It is a very simple game, so we can focus on the small pieces of code and do it step by step.</footer>
+    </section>
+  </div></div>
+
+  <div id="preparation" class="slide"><div>
+    <section>
+      <header><h2>0. Preparation</h2></header>
+      <ul>
+        <li>Basic JavaScript knowledge</li>
+        <li>Open mind, eager to learn</li>
+      </ul>
+      <footer class="notes">Some basic JavaScript knowledge is required, so we can focus on the game itself.</footer>
+    </section>
+  </div></div>
+
+  <div id="canvas" class="slide"><div>
+    <section>
+      <header><h2>1. Create the Canvas and draw on it</h2></header>
+      <footer class="notes">First, let's create a Canvas element and make sure we can draw shapes on it.</footer>
+    </section>
+  </div></div>
+
+  <div id="html" class="slide"><div>
+    <section>
+      <header><h2>HTML structure</h2></header>
+      <pre style="font-size: 14px;">
+        <code>&lt;!DOCTYPE html&gt;</code>
+        <code>&lt;html&gt;</code>
+        <code>&lt;head&gt;</code>
+        <code>    &lt;meta charset="utf-8" /&gt;</code>
+        <code>    &lt;title&gt;Gamedev Canvas Workshop&lt;/title&gt;</code>
+        <code>    &lt;style&gt;</code>
+        <code>      * { padding: 0; margin: 0; }</code>
+        <code>      canvas { background: #eee; display: block; margin: 0 auto; }</code>
+        <code>    &lt;/style&gt;</code>
+        <code>&lt;/head&gt;</code>
+        <code>&lt;body&gt;</code>
+        <code>&lt;canvas id="myCanvas" width="480" height="320"&gt;&lt;/canvas&gt;</code>
+        <code>&lt;script&gt;</code>
+        <code>  // JavaScript code goes here</code>
+        <code>&lt;/script&gt;</code>
+        <code>&lt;/body&gt;</code>
+        <code>&lt;/html&gt;</code>
+      </pre>
+      <footer class="notes">That's our HTML document structure. It contains the basic information we need. All the JavaScript code will be written inside those Script tags and rendered on the Canvas element.</footer>
+    </section>
+  </div></div>
+
+  <div id="init" class="slide"><div>
+    <section>
+      <header><h2>Initialize the handle</h2></header>
+      <pre>
+        <code>var canvas = document.getElementById("myCanvas");</code>
+        <code>var ctx = canvas.getContext("2d");</code>
+      </pre>
+      <footer class="notes">To be able to write on the Canvas we need to have a handler for that. The ctx is the context of the Canvas and will be used to draw on it.</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-canvas" class="slide"><div>
+    <section>
+      <header><h2>Draw on the Canvas</h2></header>
+      <pre>
+        <code>ctx.beginPath();</code>
+        <code>ctx.rect(20, 40, 50, 50);</code>
+        <code>ctx.fillStyle = "#FF0000";</code>
+        <code>ctx.fill();</code>
+        <code>ctx.closePath();</code>
+      </pre>
+      <footer class="notes">Drawing on Canvas is done by using the available functions. In this case: we're starting the drawing path, make a rectangle, set the fill style, fill it with given color and close the path.</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-shape" class="slide"><div>
+    <section>
+      <header><h2>Draw shapes</h2></header>
+      <pre>
+        <code>ctx.beginPath();</code>
+        <code>ctx.arc(240, 160, 20, 0, Math.PI*2, false);</code>
+        <code>ctx.fillStyle = "green";</code>
+        <code>ctx.fill();</code>
+        <code>ctx.closePath();</code>
+      </pre>
+      <footer class="notes">We can draw other shapes like the circle. The first two values are the x and y positions, the third one is the radius, fourth the starting angle and the fifth the ending angle. The last parameter is the direction of painting the angle (optional, false for clockwise).</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-style" class="slide"><div>
+    <section>
+      <header><h2>Draw in different style</h2></header>
+      <pre>
+        <code>ctx.beginPath();</code>
+        <code>ctx.rect(160, 10, 100, 40);</code>
+        <code>ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";</code>
+        <code>ctx.stroke();</code>
+        <code>ctx.closePath();</code>
+      </pre>
+      <footer class="notes">Instead of filling the shapes, you can also stroke them. It will create an interesting effect. Remember that you can use any way of defining the color, just like in CSS: from color names, though hexadecimal values, to RGBA.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr1" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 1</h2></header>
+      <p><img src="img/lesson01.png" alt="Screenshot 1" /></p>
+      <footer class="notes">Screenshot of the first step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex1" class="slide"><div>
+    <section>
+      <header><h2>Exercise 1</h2></header>
+      <p>Change the size and color of the given shapes.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src1" class="slide"><div>
+    <section>
+      <header><h2>Source code 1</h2></header>
+      <p><iframe width="100%" height="370" src="https://jsfiddle.net/end3r/x62h15e2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe></p>
+      <footer class="notes">Full source code of the first step.</footer>
+    </section>
+  </div></div>
+
+  <div id="move" class="slide"><div>
+    <section>
+      <header><h2>2. Move the ball</h2></header>
+      <footer class="notes">Ok, we know how to draw the shapes, so let's think about the way to move it on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="loop" class="slide"><div>
+    <section>
+      <header><h2>Draw loop</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  // drawing code</code>
+        <code>}</code>
+        <code>setInterval(draw, 10);</code>
+      </pre>
+      <footer class="notes">Let's move the drawing code into a loop, so we can execute it every 10 miliseconds.</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-ball" class="slide"><div>
+    <section>
+      <header><h2>Drawing the ball</h2></header>
+      <pre>
+        <code>ctx.beginPath();</code>
+        <code>ctx.arc(50, 50, 10, 0, Math.PI*2);</code>
+        <code>ctx.fillStyle = "#0095DD";</code>
+        <code>ctx.fill();</code>
+        <code>ctx.closePath();</code>
+      </pre>
+      <footer class="notes">This code will draw a blue ball on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="start" class="slide"><div>
+    <section>
+      <header><h2>Starting point</h2></header>
+      <pre>
+        <code>var x = canvas.width/2;</code>
+        <code>var y = canvas.height-30;</code>
+      </pre>
+      <footer class="notes">Instead of having the same, fixed values (50, 50) for the starting point, let's move that to the separate variables.</footer>
+    </section>
+  </div></div>
+
+  <div id="xy" class="slide"><div>
+    <section>
+      <header><h2>Variables instead of constants</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  ctx.beginPath();</code>
+        <code class="important">  ctx.arc(x, y, 10, 0, Math.PI*2);</code>
+        <code>  ctx.fillStyle = "#0095DD";</code>
+        <code>  ctx.fill();</code>
+        <code>  ctx.closePath();</code>
+        <code>}</code>
+      <pre>
+      <footer class="notes">We'll use x and y variables in the arc() function.</footer>
+    </section>
+  </div></div>
+
+  <div id="delta" class="slide"><div>
+    <section>
+      <header><h2>Delta</h2></header>
+      <pre>
+        <code>var dx = 2;</code>
+        <code>var dy = -2;</code>
+      </pre>
+      <footer class="notes">We want to add a small value to x and y after every frame has been drawn to make it appear that the ball is moving. Let's define these small values as dx and dy and set their values to 2 and -2 respectively.</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-xy" class="slide"><div>
+    <section>
+      <header><h2>Draw with delta</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  ctx.beginPath();</code>
+        <code>  ctx.arc(x, y, 10, 0, Math.PI*2);</code>
+        <code>  ctx.fillStyle = "#0095DD";</code>
+        <code>  ctx.fill();</code>
+        <code>  ctx.closePath();</code>
+        <code class="important">  x += dx;</code>
+        <code class="important">  y += dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">We will update x and y with our dx and dy variable on every frame, so the ball will be painted in the new position on every update.</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-trace" class="slide"><div>
+    <section>
+      <header><h2>Ooops!</h2></header>
+      <p><img src="img/ball-trail.png" alt="Breakout ball trail" /></p>
+      <footer class="notes">Everything is there on the screen, so what's the problem? We're drawing new things on the screen, but we're not removing the previous ones.</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-clear" class="slide"><div>
+    <section>
+      <header><h2>Clear the Canvas</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code class="important">  ctx.clearRect(0, 0, canvas.width, canvas.height);</code>
+        <code>  ctx.beginPath();</code>
+        <code>  ctx.arc(x, y, 10, 0, Math.PI*2);</code>
+        <code>  ctx.fillStyle = "#0095DD";</code>
+        <code>  ctx.fill();</code>
+        <code>  ctx.closePath();</code>
+        <code>  x += dx;</code>
+        <code>  y += dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">We don't have control over what was already painted on the screen, but we can clear everything and then paint new things on top of that - clearRect() does exactly that.</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-tidy" class="slide"><div>
+    <section>
+      <header><h2>Make it tidy</h2></header>
+      <pre style="font-size: 16px;">
+        <code>function drawBall() {</code>
+        <code>  ctx.beginPath();</code>
+        <code>  ctx.arc(x, y, 10, 0, Math.PI*2);</code>
+        <code>  ctx.fillStyle = "#0095DD";</code>
+        <code>  ctx.fill();</code>
+        <code>  ctx.closePath();</code>
+        <code>}</code>
+        <code>function draw() {</code>
+        <code>  ctx.clearRect(0, 0, canvas.width, canvas.height);</code>
+        <code>  drawBall();</code>
+        <code>  x += dx;</code>
+        <code>  y += dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Let's move the code responsible for drawing the ball into a separate function called drawBall(), so inside the draw() function we can focus on the most important things and have it nice and clean.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr2" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 2</h2></header>
+      <p><img src="img/lesson02.png" alt="Screenshot 2" /></p>
+      <footer class="notes">Screenshot of the second step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex2" class="slide"><div>
+    <section>
+      <header><h2>Exercise 2</h2></header>
+      <p>Change the speed of the moving ball, or the direction it moves in.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src2" class="slide"><div>
+    <section>
+      <header><h2>Source code 2</h2></header>
+      <p><iframe frameborder="0" height="415" src="https://jsfiddle.net/end3r/3x5foxb1/embedded/" width="100%"></iframe></p>
+      <footer class="notes">Full source code of the second step.</footer>
+    </section>
+  </div></div>
+
+  <div id="bounce" class="slide"><div>
+    <section>
+      <header><h2>3. Bounce off the walls</h2></header>
+      <footer class="notes">Time to implement the concept of collision detection</footer>
+    </section>
+  </div></div>
+
+  <div id="bounce-collision" class="slide"><div>
+    <section>
+      <header><h2>Simple collision detection</h2></header>
+      <pre>
+        <code>var ballRadius = 10;</code>
+        <code>ctx.arc(x, y, ballRadius, 0, Math.PI*2);</code>
+      </pre>
+      <footer class="notes">To make our coding easier let's move the ball radius to a separate variable - we will need it later.</footer>
+    </section>
+  </div></div>
+
+  <div id="bounce-top" class="slide"><div>
+    <section>
+      <header><h2>Bouncing off - the top</h2></header>
+      <pre>
+        <code>if(y + dy &lt; 0) {</code>
+        <code>  dy = -dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">We need to check, on every frame, whether the ball is touching the top edge of the Canvas — if yes, we'll reverse the ball movement so it will start to move in the opposite direction and stay within the visible boundaries.</footer>
+    </section>
+  </div></div>
+
+  <div id="bounce-bottom" class="slide"><div>
+    <section>
+      <header><h2>Bouncing off - the bottom</h2></header>
+      <pre>
+        <code>if(y + dy &gt; canvas.height) {</code>
+        <code>  dy = -dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Bottom edge case works very similar to the top one.</footer>
+    </section>
+  </div></div>
+
+  <div id="bounce-both" class="slide"><div>
+    <section>
+      <header><h2>Bouncing off the top and bottom</h2></header>
+      <pre>
+        <code>if(y + dy &gt; canvas.height || y + dy &lt; 0) {</code>
+        <code>  dy = -dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Merging those two conditions gives us collision detection on top and bottom edges of the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="bounce-all" class="slide"><div>
+    <section>
+      <header><h2>Bouncing off all four directions</h2></header>
+      <pre>
+        <code>if(x + dx &gt; canvas.width || x + dx &lt; 0) {</code>
+        <code>  dx = -dx;</code>
+        <code>}</code>
+        <code>if(y + dy &gt; canvas.height || y + dy &lt; 0) {</code>
+        <code>  dy = -dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Replacing y with x gives us the left-right conditions. Adding everything up works as expected - the ball bouncess off all four walls.</footer>
+    </section>
+  </div></div>
+
+  <div id="bounce-oops" class="slide"><div>
+    <section>
+      <header><h2>Ooops!</h2></header>
+      <p><img src="img/ball-in-wall.png" alt="Breakout ball in wall" /></p>
+      <footer class="notes">Looks like the ball ended up in the middle of the wall. It bounces off, but it looks strange... remember the ballRadius variable which was mentioned at the beginning of this lesson? Yeah, we're gonna use that.</footer>
+    </section>
+  </div></div>
+
+  <div id="bounce-radius" class="slide"><div>
+    <section>
+      <header><h2>Exact collision point</h2></header>
+      <pre>
+        <code>if(x + dx &gt; canvas.width-ballRadius || x + dx &lt; ballRadius) {</code>
+        <code>  dx = -dx;</code>
+        <code>}</code>
+        <code>if(y + dy &gt; canvas.height-ballRadius || y + dy &lt; ballRadius) {</code>
+        <code>  dy = -dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Instead of calculating the collision detection for the ball's center we're doing that for its edges. Now everything works as it should be.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr3" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 3</h2></header>
+      <p><img src="img/lesson03.png" alt="Screenshot 3" /></p>
+      <footer class="notes">Screenshot of the third step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex3" class="slide"><div>
+    <section>
+      <header><h2>Exercise 3</h2></header>
+      <p>Change the color of the ball to a random colour every time it hits the wall.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src3" class="slide"><div>
+    <section>
+      <header><h2>Source code 3</h2></header>
+      <p><iframe frameborder="0" height="320" src="https://jsfiddle.net/end3r/redj37dc/embedded/" width="100%"></iframe></p>
+      <footer class="notes">Full source code of the third step.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle" class="slide"><div>
+    <section>
+      <header><h2>4. Paddle and keyboard controls</h2></header>
+      <footer class="notes">We have the ball moving on the screen, but it would be cool to have a paddle and be able to control it, so we could interact with the ball somehow.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-init" class="slide"><div>
+    <section>
+      <header><h2>Paddle</h2></header>
+      <pre>
+        <code>var paddleHeight = 10;</code>
+        <code>var paddleWidth = 75;</code>
+        <code>var paddleX = (canvas.width-paddleWidth)/2;</code>
+      </pre>
+      <footer class="notes">Let's define the paddle first. It needs height and width, and the starting point which in our case is in the middle of the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-draw" class="slide"><div>
+    <section>
+      <header><h2>Draw the paddle</h2></header>
+      <pre>
+        <code>function drawPaddle() {</code>
+        <code>  ctx.beginPath();</code>
+        <code>  ctx.rect(paddleX, canvas.height-paddleHeight,</code>
+        <code>    paddleWidth, paddleHeight);</code>
+        <code>  ctx.fillStyle = "#0095DD";</code>
+        <code>  ctx.fill();</code>
+        <code>  ctx.closePath();</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Drawing paddle looks very similar to drawing any other shape - after all it's just a rectangle. We center it on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-howto" class="slide"><div>
+    <section>
+      <header><h2>How to control the paddle</h2></header>
+      <ul>
+        <li>Two variables for left and right button presses</li>
+        <li>Two event listeners for <code>keydown</code> and <code>keyup</code> events</li>
+        <li>Two functions handling the <code>keydown</code> and <code>keyup</code> events</li>
+        <li>Ability to actually move the paddle left and right</li>
+      </ul>
+      <footer class="notes">To control the paddle with the keyboard we have to have two variables to store the left and right key press, two event listeners that will handle those events, two functions that will execute the code and the ability to move the paddle on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-vars" class="slide"><div>
+    <section>
+      <header><h2>Variables storing key press</h2></header>
+      <pre>
+        <code>var rightPressed = false;</code>
+        <code>var leftPressed = false;</code>
+      </pre>
+      <footer class="notes">We have to store the information on whether any of the keys is pressed.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-events" class="slide"><div>
+    <section>
+      <header><h2>Keyboard events</h2></header>
+      <pre>
+        <code>document.addEventListener("keydown", keyDownHandler, false);</code>
+        <code>document.addEventListener("keyup", keyUpHandler, false);</code>
+      </pre>
+      <footer class="notes">By adding the event listener we're waiting for the actual key press and execute the proper function when it happens.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-functions-down" class="slide"><div>
+    <section>
+      <header><h2>Event functions - down</h2></header>
+      <pre>
+        <code>function keyDownHandler(e) {</code>
+        <code>  if(e.keyCode == 39) {</code>
+        <code>    rightPressed = true;</code>
+        <code>  }</code>
+        <code>  else if(e.keyCode == 37) {</code>
+        <code>    leftPressed = true;</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">This function checks whether the key that was pressed is the right arrow (key code 39) or left arrow (key code 37) and sets the proper variable to true.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-functions-up" class="slide"><div>
+    <section>
+      <header><h2>Event functions - up</h2></header>
+      <pre>
+        <code>function keyUpHandler(e) {</code>
+        <code>  if(e.keyCode == 39) {</code>
+        <code>    rightPressed = false;</code>
+        <code>  }</code>
+        <code>  else if(e.keyCode == 37) {</code>
+        <code>    leftPressed = false;</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">This function sets the proper variable to false when the given key is released.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-move" class="slide"><div>
+    <section>
+      <header><h2>Move the paddle</h2></header>
+      <pre>
+        <code>if(rightPressed) {</code>
+        <code>  paddleX += 7;</code>
+        <code>}</code>
+        <code>else if(leftPressed) {</code>
+        <code>  paddleX -= 7;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">To move the paddle on the screen all you have to do is add or remove 7 pixels to the X position of the paddle.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-limit" class="slide"><div>
+    <section>
+      <header><h2>Limit the movement</h2></header>
+      <pre>
+        <code>if(rightPressed &amp;&amp; paddleX &lt; canvas.width-paddleWidth) {</code>
+        <code>  paddleX += 7;</code>
+        <code>}</code>
+        <code>else if(leftPressed &amp;&amp; paddleX &gt; 0) {</code>
+        <code>  paddleX -= 7;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">You can easily go out of screen with the paddle if you hold it for too long. It would be good to limit its movement only to the visible area.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-all" class="slide"><div>
+    <section>
+      <header><h2>Draw everything</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  ctx.clearRect(0, 0, canvas.width, canvas.height);</code>
+        <code>  drawBall();</code>
+        <code class="important">  drawPaddle();</code>
+        <code class="comment">  // ...</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Remember to add drawPaddle() to the main draw() function.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr4" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 4</h2></header>
+      <p><img src="img/lesson04.png" alt="Screenshot 4" /></p>
+      <footer class="notes">Screenshot of the fourth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex4" class="slide"><div>
+    <section>
+      <header><h2>Exercise 4</h2></header>
+      <p>Make the paddle move faster or slower, or change its size.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src4" class="slide"><div>
+    <section>
+      <header><h2>Source code 4</h2></header>
+      <p><iframe frameborder="0" height="320" src="https://jsfiddle.net/end3r/tgn3zscj/embedded/" width="100%"></iframe></p>
+      <footer class="notes">Full source code of the fourth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="over" class="slide"><div>
+    <section>
+      <header><h2>5. Game over</h2></header>
+      <footer class="notes">Instead of playing indefinitely we can set up a possibility to lose. If you miss the ball with the paddle and let it reach the bottom edge of the screen, then it's game over.</footer>
+    </section>
+  </div></div>
+
+  <div id="over-bounce" class="slide"><div>
+    <section>
+      <header><h2>Bouncing off the walls</h2></header>
+      <pre>
+        <code>if(x + dx &gt; canvas.width-ballRadius || x + dx &lt; ballRadius) {</code>
+        <code>  dx = -dx;</code>
+        <code>}</code>
+        <code>if(y + dy &gt; canvas.height-ballRadius || y + dy &lt; ballRadius) {</code>
+        <code>  dy = -dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Look at the code responsible for bouncing the ball off every wall.</footer>
+    </section>
+  </div></div>
+
+  <div id="over-horizontal" class="slide"><div>
+    <section>
+      <header><h2>Horizontal bounce</h2></header>
+      <pre>
+        <code>if(x + dx &lt; ballRadius) {</code>
+        <code>  dx = -dx;</code>
+        <code>} else if(x + dx &gt; canvas.width-ballRadius) {</code>
+        <code>  dx = -dx;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Split the first condition where the left and right edges are checked.</footer>
+    </section>
+  </div></div>
+
+  <div id="over-vertical" class="slide"><div>
+    <section>
+      <header><h2>Vertical bounce</h2></header>
+      <pre>
+        <code>if(y + dy &lt; ballRadius) {</code>
+        <code>  dy = -dy;</code>
+        <code>} else if(y + dy &gt; canvas.height-ballRadius) {</code>
+        <code>  alert("GAME OVER");</code>
+        <code>  document.location.reload();</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Do the same with the second condition and show the alert when the ball hits the bottom edge of the screen instead of just bouncing it off. After the alert is clicked the page will be reloaded and the new game will start.</footer>
+    </section>
+  </div></div>
+
+  <div id="over-hit" class="slide"><div>
+    <section>
+      <header><h2>Hit the ball with the paddle</h2></header>
+      <pre style="font-size: 20px;">
+        <code>if(y + dy &lt; ballRadius) {</code>
+        <code>  dy = -dy;</code>
+        <code>} else if(y + dy &gt; canvas.height-ballRadius) {</code>
+        <code>  if(x &gt; paddleX &amp;&amp; x &lt; paddleX + paddleWidth) {</code>
+        <code>    dy = -dy;</code>
+        <code>  }</code>
+        <code>  else {</code>
+        <code>    alert("GAME OVER");</code>
+        <code>    document.location.reload();</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Allow the player to hit the ball with the paddle - if the ball is between the starting and ending point of the paddle when it reaches the bottom edge, then bounce. Otherwise - game over.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr5" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 5</h2></header>
+      <p><img src="img/lesson05.png" alt="Screenshot 5" /></p>
+      <footer class="notes">Screenshot of the fifth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex5" class="slide"><div>
+    <section>
+      <header><h2>Exercise 5</h2></header>
+      <p>Make the ball move faster when it hits the paddle.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src5" class="slide"><div>
+    <section>
+      <header><h2>Source code 5</h2></header>
+      <p><iframe frameborder="0" height="320" src="https://jsfiddle.net/end3r/z4zy79fo/embedded/" width="100%"></iframe></p>
+      <footer class="notes">Full source code of the fifth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="brick" class="slide"><div>
+    <section>
+      <header><h2>6. Build the brick field</h2></header>
+      <footer class="notes">The game will quickly get boring if all you do is bounce the ball off the walls and the paddle. What a breakout game really needs is some bricks to destroy with the ball.</footer>
+    </section>
+  </div></div>
+
+  <div id="brick-vars" class="slide"><div>
+    <section>
+      <header><h2>Brick variables</h2></header>
+      <pre>
+        <code>var brickRowCount = 5;</code>
+        <code>var brickColumnCount = 3;</code>
+        <code>var brickWidth = 75;</code>
+        <code>var brickHeight = 20;</code>
+        <code>var brickPadding = 10;</code>
+        <code>var brickOffsetTop = 30;</code>
+        <code>var brickOffsetLeft = 30;</code>
+      </pre>
+      <footer class="notes">Let's define all the variables we're gonna need for the bricks: number of rows and columns, width and height of the brick, padding between them, the top and left offset of their starting position.</footer>
+    </section>
+  </div></div>
+
+  <div id="brick-array" class="slide"><div>
+    <section>
+      <header><h2>2D array of bricks</h2></header>
+      <pre>
+        <code>var bricks = [];</code>
+        <code>for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>  bricks[c] = [];</code>
+        <code>  for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code>    bricks[c][r] = { x: 0, y: 0 };</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">We will need a two-dimentional array for holding the info about the bricks - the x and y position of every brick.</footer>
+    </section>
+  </div></div>
+
+  <div id="brick-draw" class="slide"><div>
+    <section>
+      <header><h2>Drawing the bricks</h2></header>
+      <pre style="font-size: 18px;">
+        <code>function drawBricks() {</code>
+        <code>  for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>    for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code>      bricks[c][r].x = 0;</code>
+        <code>      bricks[c][r].y = 0;</code>
+        <code>      ctx.beginPath();</code>
+        <code>      ctx.rect(0, 0, brickWidth, brickHeight);</code>
+        <code>      ctx.fillStyle = "#0095DD";</code>
+        <code>      ctx.fill();</code>
+        <code>      ctx.closePath();</code>
+        <code>    }</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Drawing bricks on the screen looks similar as any other drawing of shapes - we're looping through the 2D array of shapes.</footer>
+    </section>
+  </div></div>
+
+  <div id="brick-logic" class="slide"><div>
+    <section>
+      <header><h2>Position logic</h2></header>
+      <pre>
+        <code>var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;</code>
+        <code>var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;</code>
+      </pre>
+      <footer class="notes">Instead of drawing everything at the (0,0) point we have to figure out a way to calculate x and y for every brick in the array so it looks as we want it to look - a few rows and columns of bricks with equal spaces between them. Here's the magic formula: each brickX position is worked out as brickWidth + brickPadding, multiplied by the row number, r, plus the brickOffsetLeft; the logic for the brickY is identical except that it uses the values for column number, c, brickHeight, and brickOffsetTop.</footer>
+    </section>
+  </div></div>
+
+  <div id="brick-draw2" class="slide"><div>
+    <section>
+      <header><h2>Proper draw</h2></header>
+      <pre style="font-size: 16px;">
+        <code>function drawBricks() {</code>
+        <code>  for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>    for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code>      var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;</code>
+        <code>      var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;</code>
+        <code>      bricks[c][r].x = brickX;</code>
+        <code>      bricks[c][r].y = brickY;</code>
+        <code>      ctx.beginPath();</code>
+        <code>      ctx.rect(brickX, brickY, brickWidth, brickHeight);</code>
+        <code>      ctx.fillStyle = "#0095DD";</code>
+        <code>      ctx.fill();</code>
+        <code>      ctx.closePath();</code>
+        <code>    }</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Now everything falls into place and draws perfectly on screen as we wanted.</footer>
+    </section>
+  </div></div>
+
+  <div id="brick-all" class="slide"><div>
+    <section>
+      <header><h2>Draw everything</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  ctx.clearRect(0, 0, canvas.width, canvas.height);</code>
+        <code class="important">  drawBricks();</code>
+        <code>  drawBall();</code>
+        <code>  drawPaddle();</code>
+        <code class="comment">  // ...</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Remember to add drawBricks() to the main draw() function.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr6" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 6</h2></header>
+      <p><img src="img/lesson06.png" alt="Screenshot 6" /></p>
+      <footer class="notes">Screenshot of the sixth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex6" class="slide"><div>
+    <section>
+      <header><h2>Exercise 6</h2></header>
+      <p>Change the number of bricks in a row or a column, or their positions.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src6" class="slide"><div>
+    <section>
+      <header><h2>Source code 6</h2></header>
+      <p><iframe frameborder="0" height="320" src="https://jsfiddle.net/end3r/5e24k7ho/embedded/" width="100%"></iframe></p>
+      <footer class="notes">Full source code of the sixth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="collision" class="slide"><div>
+    <section>
+      <header><h2>7. Collision detection</h2></header>
+      <footer class="notes">We have the bricks painted on the screen already, but the game still isn't that interesting, as the ball goes through them — we need to think about adding collision detection, so it could bounce off the bricks and break them.</footer>
+    </section>
+  </div></div>
+
+  <div id="collision-function" class="slide"><div>
+    <section>
+      <header><h2>Collision detection function</h2></header>
+      <pre>
+        <code>function collisionDetection() {</code>
+        <code>  for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>    for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code>      var b = bricks[c][r];</code>
+        <code>      // calculations</code>
+        <code>    }</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">We will need a function for collision detection. We will loop through all the bricks and do calculations to determine whether the ball collides with the given brick or not.</footer>
+    </section>
+  </div></div>
+
+  <div id="collision-logic" class="slide"><div>
+    <section>
+      <header><h2>Collision logic</h2></header>
+      <ul>
+        <li>The x position of the ball is greater than the x position of the brick.</li>
+        <li>The x position of the ball is less than the x position of the brick minus its width.</li>
+        <li>The y position of the ball is greater than the y position of the brick.</li>
+        <li>The y position of the ball is less than the y position of the brick minus its width.</li>
+      <ul>
+      <footer class="notes">Our collision won't be pixel perfect - instead, we will make it easier for us and simplify it. We will ommit the radius of the bll and check if the center of the ball collide with any given brick. Looping through all bricks on every frame is not very efficient and could be optimized, but our game is very simple and we don't need to do that. For now, the concept of collision detection itself is the key here.</footer>
+    </section>
+  </div></div>
+
+  <div id="collision-condition" class="slide"><div>
+    <section>
+      <header><h2>Collision condition</h2></header>
+      <pre>
+        <code>function collisionDetection() {</code>
+        <code>  for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>    for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code>      var b = bricks[c][r];</code>
+        <code>      if(x > b.x &amp;&amp; x &lt; b.x+brickWidth &amp;&amp;</code>
+        <code>        y &gt; b.y &amp;&amp; y &lt; b.y+brickHeight) {</code>
+        <code>        dy = -dy;</code>
+        <code>      }</code>
+        <code>    }</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Here's the code responsible for checking if the center of the ball is within the boundaries of the given brick.</footer>
+    </section>
+  </div></div>
+
+  <div id="collision-status" class="slide"><div>
+    <section>
+      <header><h2>Status of the brick</h2></header>
+      <pre>
+        <code>var bricks = [];</code>
+        <code>for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>  bricks[c] = [];</code>
+        <code>  for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code class="important">    bricks[c][r] = { x: 0, y: 0, status: 1 };</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Hitting the bricks works, but we don't see any effect. We have to control the bricks somehow, so when it is hit, it will disappear. We will use a status variable for that in the loop where we're creating those bricks.</footer>
+    </section>
+  </div></div>
+
+  <div id="collision-draw" class="slide"><div>
+    <section>
+      <header><h2>Draw if not hidden</h2></header>
+      <pre style="font-size: 14px;">
+        <code>function drawBricks() {</code>
+        <code>  for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>    for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code class="important">      if(bricks[c][r].status == 1) {</code>
+        <code class="important">        var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;</code>
+        <code class="important">        var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;</code>
+        <code class="important">        bricks[c][r].x = brickX;</code>
+        <code class="important">        bricks[c][r].y = brickY;</code>
+        <code class="important">        ctx.beginPath();</code>
+        <code class="important">        ctx.rect(brickX, brickY, brickWidth, brickHeight);</code>
+        <code class="important">        ctx.fillStyle = "#0095DD";</code>
+        <code class="important">        ctx.fill();</code>
+        <code class="important">        ctx.closePath();</code>
+        <code class="important">      }</code>
+        <code>    }</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">If the status of the brick is 1, then it is drawn on the screen. If the status is 0, then we omit that.</footer>
+    </section>
+  </div></div>
+
+  <div id="collision-hide" class="slide"><div>
+    <section>
+      <header><h2>Hide when hit</h2></header>
+      <pre style="font-size: 16px;">
+        <code>function collisionDetection() {</code>
+        <code>  for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>    for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code>      var b = bricks[c][r];</code>
+        <code class="important">      if(b.status == 1) {</code>
+        <code class="important">        if(x &gt; b.x &amp;&amp; x &lt; b.x+brickWidth &amp;&amp;</code>
+        <code class="important">          y &gt; b.y &amp;&amp; y &lt; b.y+brickHeight) {</code>
+        <code class="important">          dy = -dy;</code>
+        <code class="important">          b.status = 0;</code>
+        <code class="important">        }</code>
+        <code class="important">      }</code>
+        <code>    }</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">When the brick is hit, then we're setting its status variable to 0, so it won't be checked in the collision detection again and printed on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="collision-execute" class="slide"><div>
+    <section>
+      <header><h2>Execute everything</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  ctx.clearRect(0, 0, canvas.width, canvas.height);</code>
+        <code>  drawBricks();</code>
+        <code>  drawBall();</code>
+        <code>  drawPaddle();</code>
+        <code class="important">  collisionDetection();</code>
+        <code class="comment">  // ...</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Remember to add collisionDetection() to the main draw() function.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr7" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 7</h2></header>
+      <p><img src="img/lesson07.png" alt="Screenshot 7" /></p>
+      <footer class="notes">Screenshot of the seventh step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex7" class="slide"><div>
+    <section>
+      <header><h2>Exercise 7</h2></header>
+      <p>Change the color of the ball when it hits the brick.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src7" class="slide"><div>
+    <section>
+      <header><h2>Source code 7</h2></header>
+      <p><iframe frameborder="0" height="320" src="https://jsfiddle.net/end3r/oyhmvo6e/embedded/" width="100%"></iframe></p>
+      <footer class="notes">Full source code of the seventh step.</footer>
+    </section>
+  </div></div>
+
+  <div id="score" class="slide"><div>
+    <section>
+      <header><h2>8. Track the score and win</h2></header>
+      <footer class="notes">Destroying the bricks is really cool, but to be even more awesome the game could award points for every brick a user hits, and keep count of the total score.</footer>
+    </section>
+  </div></div>
+
+  <div id="score-var" class="slide"><div>
+    <section>
+      <header><h2>Score variable</h2></header>
+      <pre>
+        <code>var score = 0;</code>
+      </pre>
+      <footer class="notes">Let's start with the variable we need.</footer>
+    </section>
+  </div></div>
+
+  <div id="score-draw" class="slide"><div>
+    <section>
+      <header><h2>Drawing the score</h2></header>
+      <pre>
+        <code>function drawScore() {</code>
+        <code>  ctx.font = "16px Arial";</code>
+        <code>  ctx.fillStyle = "#0095DD";</code>
+        <code>  ctx.fillText("Score: "+score, 8, 20);</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Drawing the score on the screen is simple.</footer>
+    </section>
+  </div></div>
+
+  <div id="score-increase" class="slide"><div>
+    <section>
+      <header><h2>Increasing the score</h2></header>
+      <pre>
+        <code>function collisionDetection() {</code>
+        <code>  for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>    for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code>      var b = bricks[c][r];</code>
+        <code>      if(x > b.x &amp;&amp; x &lt; b.x+brickWidth &amp;&amp;</code>
+        <code>        y &gt; b.y &amp;&amp; y &lt; b.y+brickHeight) {</code>
+        <code>        dy = -dy;</code>
+        <code>        b.status = 0;</code>
+        <code class="important">        score++;</code>
+        <code>      }</code>
+        <code>    }</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Add points to the score variable when we hit the brick.</footer>
+    </section>
+  </div></div>
+
+  <div id="score-drawall" class="slide"><div>
+    <section>
+      <header><h2>Print it out</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  ctx.clearRect(0, 0, canvas.width, canvas.height);</code>
+        <code>  drawBricks();</code>
+        <code>  drawBall();</code>
+        <code>  drawPaddle();</code>
+        <code>  collisionDetection();</code>
+        <code class="important">  drawScore();</code>
+        <code class="comment">  // ...</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Remember to add drawScore() to the main draw() function.</footer>
+    </section>
+  </div></div>
+
+  <div id="score-win" class="slide"><div>
+    <section>
+      <header><h2>Win condition</h2></header>
+      <pre style="font-size: 14px;">
+        <code>function collisionDetection() {</code>
+        <code>  for(c=0; c&lt;brickColumnCount; c++) {</code>
+        <code>    for(r=0; r&lt;brickRowCount; r++) {</code>
+        <code>      var b = bricks[c][r];</code>
+        <code>      if(x > b.x &amp;&amp; x &lt; b.x+brickWidth &amp;&amp;</code>
+        <code>        y &gt; b.y &amp;&amp; y &lt; b.y+brickHeight) {</code>
+        <code>        dy = -dy;</code>
+        <code>        b.status = 0;</code>
+        <code>        score++;</code>
+        <code class="important">        if(score == brickRowCount*brickColumnCount) {</code>
+        <code class="important">          alert("YOU WIN, CONGRATULATIONS!");</code>
+        <code class="important">          document.location.reload();</code>
+        <code class="important">        }</code>
+        <code>      }</code>
+        <code>    }</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">If the score is the same as the number of all our bricks (we hit all of them), then the player won. Show the congrats message and then reload the page to play again.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr8" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 8</h2></header>
+      <p><img src="img/lesson08.png" alt="Screenshot 8" /></p>
+      <footer class="notes">Screenshot of the eight step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex8" class="slide"><div>
+    <section>
+      <header><h2>Exercise 8</h2></header>
+      <p>Add more points per brick hit, print out the number of collected points in the end game alert box.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src8" class="slide"><div>
+    <section>
+      <header><h2>Source code 8</h2></header>
+      <p><iframe frameborder="0" height="320" src="https://jsfiddle.net/end3r/mvfkcydz/embedded/" width="100%"></iframe></p>
+      <footer class="notes">Full source code of the eight step.</footer>
+    </section>
+  </div></div>
+
+  <div id="mouse" class="slide"><div>
+    <section>
+      <header><h2>9. Mouse controls</h2></header>
+      <footer class="notes">The game itself is actually finished, so let's work on polishing it up. We have already added keyboard controls, but we could easily add mouse controls too.</footer>
+    </section>
+  </div></div>
+
+  <div id="mouse-listener" class="slide"><div>
+    <section>
+      <header><h2>Mouse movement listener</h2></header>
+      <pre style="font-size: 20px;">
+        <code>document.addEventListener("mousemove", mouseMoveHandler, false);</code>
+      </pre>
+      <footer class="notes">Listening for mouse movement is even easier than listening for key presses: all we need is the listener for the mousemove event.</footer>
+    </section>
+  </div></div>
+
+  <div id="mouse-handler" class="slide"><div>
+    <section>
+      <header><h2>Mouse movement handler</h2></header>
+      <pre>
+        <code>function mouseMoveHandler(e) {</code>
+        <code>  var relativeX = e.clientX - canvas.offsetLeft;</code>
+        <code>  if(relativeX &gt; 0 &amp;&amp; relativeX &lt; canvas.width) {</code>
+        <code>    paddleX = relativeX - paddleWidth/2;</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">We can update the paddle position based on the pointer coordinates — the following handler function will do exactly that. The paddle will now follow the position of the mouse cursor, but since we're restricting the movement to the size of the Canvas, it won't disappear completely off either side.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr9" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 9</h2></header>
+      <p><img src="img/lesson09.png" alt="Screenshot 9" /></p>
+      <footer class="notes">Screenshot of the nineth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex9" class="slide"><div>
+    <section>
+      <header><h2>Exercise 9</h2></header>
+      <p>Adjust the boundaries of the paddle movement, so the whole paddle will be visible on both edges of the Canvas instead of only half of it.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src9" class="slide"><div>
+    <section>
+      <header><h2>Source code 9</h2></header>
+      <p><iframe frameborder="0" height="320" src="https://jsfiddle.net/end3r/L3gngab5/embedded/" width="100%"></iframe></p>
+      <footer class="notes">Full source code of the ninth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="finish" class="slide"><div>
+    <section>
+      <header><h2>10. Finishing up</h2></header>
+      <footer class="notes">There's always room for improvements in any grame we write. We can, for example, offer more than one life to the player. They could make a mistake or two and still be able to finish the game. We could also improve our code rendering.</footer>
+    </section>
+  </div></div>
+
+  <div id="finish-lives" class="slide"><div>
+    <section>
+      <header><h2>Lives</h2></header>
+      <pre>
+        <code>var lives = 3;</code>
+      </pre>
+      <footer class="notes">Implementing lives is quite straightforward. Let's first add a variable to store the number of lives, in the same place as our other variables.</footer>
+    </section>
+  </div></div>
+
+  <div id="finish-drawlives" class="slide"><div>
+    <section>
+      <header><h2>Draw lives</h2></header>
+      <pre>
+        <code>function drawLives() {</code>
+        <code>  ctx.font = "16px Arial";</code>
+        <code>  ctx.fillStyle = "#0095DD";</code>
+        <code>  ctx.fillText("Lives: "+lives, canvas.width-65, 20);</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Drawing the life counter looks almost the same as drawing the score counter — add the following function to your code, below the drawScore() function.</footer>
+    </section>
+  </div></div>
+
+  <div id="finish-removelife" class="slide"><div>
+    <section>
+      <header><h2>Removing life instead of game over</h2></header>
+      <pre style="font-size: 18px;">
+        <code class="important">lives--;</code>
+        <code class="important">if(!lives) {</code>
+        <code>  alert("GAME OVER");</code>
+        <code>  document.location.reload();</code>
+        <code class="important">}</code>
+        <code class="important">else {</code>
+        <code class="important">  x = canvas.width/2;</code>
+        <code class="important">  y = canvas.height-30;</code>
+        <code class="important">  dx = 2;</code>
+        <code class="important">  dy = -2;</code>
+        <code class="important">  paddleX = (canvas.width-paddleWidth)/2;</code>
+        <code class="important">}</code>
+      </pre>
+      <footer class="notes">Instead of ending the game immediately, we will decrease the number of lives until they are no longer available. We can also reset the ball and the paddle positions when the player starts their next life. Now, when the ball hits the bottom edge of the screen we're subtracting one life from the lives variable. If there are no lives left, the game is lost; if there are still some lives left, then the position of the ball and the paddle are reset, along with the movement of the ball.</footer>
+    </section>
+  </div></div>
+
+  <div id="finish-print" class="slide"><div>
+    <section>
+      <header><h2>Print it out</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  ctx.clearRect(0, 0, canvas.width, canvas.height);</code>
+        <code>  drawBricks();</code>
+        <code>  drawBall();</code>
+        <code>  drawPaddle();</code>
+        <code>  collisionDetection();</code>
+        <code>  drawScore();</code>
+        <code class="important">  drawLives();</code>
+        <code class="comment">  // ...</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Remember to add drawLives() to the main draw() function.</footer>
+    </section>
+  </div></div>
+
+  <div id="finish-raf" class="slide"><div>
+    <section>
+      <header><h2>Request Animation Frame</h2></header>
+      <p><code>setInterval(draw, 10);</code> => <code>draw();</code></p>
+      <p><code>requestAnimationFrame(draw);</code></p>
+      <footer class="notes">Better way to handle animations: RequestAnimationFrame helps the browser render the game better than the fixed framerate we currently have implemented using setInterval. The draw() function is now getting executed again and again within a requestAnimationFrame() loop, but instead of the fixed 10 milliseconds frame rate, we are giving control of the framerate back to the browser. It will sync the framerate accordingly and render the shapes only when needed. This produces a more efficient, smoother animation loop than the older setInterval() method.</footer>
+    </section>
+  </div></div>
+
+  <div id="scr10" class="slide"><div>
+    <section>
+      <header><h2>Screenshot 10</h2></header>
+      <p><img src="img/lesson10.png" alt="Screenshot 10" /></p>
+      <footer class="notes">Screenshot of the tenth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="ex10" class="slide"><div>
+    <section>
+      <header><h2>Exercise 10</h2></header>
+      <p>Change the number of lives and the angle the ball bounces off the paddle.</p>
+      <footer class="notes">It's easy to modify the code - fiddle with the parameters and see the changes on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="src10" class="slide"><div>
+    <section>
+      <header><h2>Source code 10</h2></header>
+      <p><iframe frameborder="0" height="320" src="https://jsfiddle.net/end3r/9temh0ta/embedded/" width="100%"></iframe></p>
+      <footer class="notes">Full source code of the tenth step.</footer>
+    </section>
+  </div></div>
+
+  <div id="thanks" class="slide"><div>
+    <section>
+      <header>
+        <h2>Thanks! Questions?</h2>
+      </header>
+      <ul class="nobull">
+        <li>{Your name and details}</li>
+        <li><strong>Slides</strong>: {slideurl}</li>
+      </ul>
+    <footer class="notes">Provide URl to the slides. Ask if there are any questions.</footer>
+    </section>
+  </div></div>
+
+  <!--
+    To hide progress bar from entire presentation
+    just remove “progress” element.
+    -->
+  <div class="progress"><div></div></div>
+  <script src="scripts/script.js"></script>
+  <!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+</body>
+</html>
