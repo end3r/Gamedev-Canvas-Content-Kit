@@ -1,0 +1,450 @@
+<!DOCTYPE HTML>
+<!-- <html lang="en-US"> -->
+<html lang="en-US" class="fade">
+<!-- 
+  ^ a class of "fade" makes slides fade smoothly into one another
+ -->
+<!-- <html lang="en-US" class="nonumbers"> -->
+<!-- 
+  If you want no numbers on the slides add a "nonumbers" class 
+  to the HTML element.
+  Adding a class of "fade" will make slides fade into another. 
+-->
+<head>
+  <meta charset="UTF-8">
+  <title>Build HTML5 Games in JavaScript</title>
+<!-- 
+  If you upload your slides to the web, ensure that you have 
+  a good title - this shows up in search results and social
+  media links
+ -->
+  <meta name="viewport" content="width=device-width, user-scalable=yes">
+  <link rel="stylesheet" href="themes/mozilla/styles/style.css">
+</head>
+<body class="list">
+  <header class="caption">
+    <h1>Build HTML5 Games in JavaScript</h1>
+    <p class="footer">
+      {Your name and details}
+    </p>
+  </header>
+  <aside class="talkdescription">
+    <p>This slide deck is using the shower system - roll over the previews to see the notes and click any slide to go into presentation mode. Then use keys to navigate. <button onclick="goFullScreen()">Go fullscreen</button></p>
+    <p class="abstract">
+      Learn how to build simple 2D HTML5 games in pure JavaScript and render them on Canvas.
+    </p>
+  </aside>
+
+<!-- 
+    Simply copy the whole block for each slide you want.
+  Special slides get extra classes. Each slide needs an ID 
+  to allow for bookmarking and target jumping.
+-->
+
+  <div id="cover" class="slide"><div>
+    <section>
+      <header>
+        <h2>Build HTML5 Games in JavaScript</h2>
+      </header>
+      <small class="byline">
+        {Firstname}, {Lastname}, {Conference}, {Location}, {date}
+      </small>
+      <footer class="notes">
+        This is a simple cover slide
+      </footer>
+    </section>
+  </div></div>
+
+<!-- end slide block -->
+
+  <div id="contents" class="slide"><div>
+    <section>
+      <header><h2>What we are going to cover</h2></header>
+      <img src="img/mdn-breakout-gameplay.png" class="right" alt="Breakout gameplay" />
+      <ul class="longlist">
+        <li>Drawing on the Canvas</li>
+        <li>Printing out the text</li>
+        <li>Game loop</li>
+        <li>Movement animation</li>
+        <li>Controlling the player</li>
+        <li>Keyboard and mouse input</li>
+        <li>Obstacles and collectibles</li>
+        <li>Collision detection</li>
+        <li>Winning and losing</li>
+        <li>Next steps</li>
+      </ul>
+      <footer class="notes">This talk will cover basic elements of a simple HTML5 game like drawing, animation, input and collision detection.</footer>
+    </section>
+  </div></div>
+
+  <div id="setup" class="slide"><div>
+    <section>
+      <header><h2>Setup</h2></header>
+      <ul>
+        <li>
+          Computer (Windows, Mac OS X, Linux)
+          <ul>
+            <li>Browser (Firefox, Chrome, Safari, Opera, Internet Explorer)</li>
+            <li>Text editor (Notepad, Sublime Text, Smultron)</li>
+          </ul>
+        </li>
+      </ul>
+      <footer class="notes">To start developing a game you only need a computer with decent browser and a text editor.</footer>
+    </section>
+  </div></div>
+
+  <div id="html" class="slide"><div>
+    <section>
+      <header><h2>Files</h2></header>
+      <ul>
+        <li>index.html</li>
+        <li><strike>style.css</strike></li>
+        <li><strike>code.js</strike></li>
+      </ul>
+      <footer class="notes">The ost important file is the index where the HTML structure is held. We could use separate files for styling with CSS and writing JavaScript code, but in a simple example like this everything can be put inside the index.html file.</footer>
+    </section>
+  </div></div>
+
+  <div id="html" class="slide"><div>
+    <section>
+      <header><h2>HTML structure</h2></header>
+      <pre style="font-size: 14px;">
+        <code>&lt;!DOCTYPE html&gt;</code>
+        <code>&lt;html&gt;</code>
+        <code>&lt;head&gt;</code>
+        <code>    &lt;meta charset="utf-8" /&gt;</code>
+        <code>    &lt;title&gt;Gamedev Canvas Workshop&lt;/title&gt;</code>
+        <code>    &lt;style&gt;</code>
+        <code>      * { padding: 0; margin: 0; }</code>
+        <code>      canvas { background: #eee; display: block; margin: 0 auto; }</code>
+        <code>    &lt;/style&gt;</code>
+        <code>&lt;/head&gt;</code>
+        <code>&lt;body&gt;</code>
+        <code>&lt;canvas id="myCanvas" width="480" height="320"&gt;&lt;/canvas&gt;</code>
+        <code>&lt;script&gt;</code>
+        <code>  // JavaScript code goes here</code>
+        <code>&lt;/script&gt;</code>
+        <code>&lt;/body&gt;</code>
+        <code>&lt;/html&gt;</code>
+      </pre>
+      <footer class="notes">That's our HTML document structure. It contains the basic information we need. All the JavaScript code will be written inside those Script tags and rendered on the Canvas element.</footer>
+    </section>
+  </div></div>
+
+  <div id="init" class="slide"><div>
+    <section>
+      <header><h2>Drawing context</h2></header>
+      <pre>
+        <code>var canvas = document.getElementById("myCanvas");</code>
+        <code>var ctx = canvas.getContext("2d");</code>
+      </pre>
+      <footer class="notes">To be able to write on the Canvas we need to have a handler for that. The ctx is the context of the Canvas and will be used to draw on it.</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-canvas" class="slide"><div>
+    <section>
+      <header><h2>Draw on the Canvas</h2></header>
+      <pre>
+        <code>ctx.beginPath();</code>
+        <code>ctx.rect(20, 40, 50, 50);</code>
+        <code>ctx.fillStyle = "#FF0000";</code>
+        <code>ctx.fill();</code>
+        <code>ctx.closePath();</code>
+      </pre>
+      <footer class="notes">Drawing on Canvas is done by using the available functions. In this case: we're starting the drawing path, make a rectangle, set the fill style, fill it with given color and close the path.</footer>
+    </section>
+  </div></div>
+
+  <div id="NAME" class="slide"><div>
+    <section>
+      <header><h2>Different draw methods</h2></header>
+      <img src="img/lesson01.png" class="left" alt="Screenshot 1" />
+      <ul>
+        <li>Shape (rect, arc)</li>
+        <li>Style (fill, stroke)</li>
+      </ul>
+      <footer class="notes">You can draw different shapes on the Canvas, and do it with various styling - just like it is shown on this image.</footer>
+    </section>
+  </div></div>
+
+  <div id="NAME" class="slide"><div>
+    <section>
+      <header><h2>Text output</h2></header>
+      <p>Score, lives, messages</p>
+      <p><img src="img/score-lives.png" class="" alt="Score and lives" /></p>
+      <pre>
+        <code>ctx.fillText("Score: "+myCurrentScore, 10, 10);</code>
+      </pre>
+      <footer class="notes">Printing out the text is similar to drawing a shape.</footer>
+    </section>
+  </div></div>
+
+  <div id="loop" class="slide"><div>
+    <section>
+      <header><h2>Game loop</h2></header>
+      <img src="img/loop.png" class="right" alt="Loop" />
+      <pre>
+        <code>function draw() {</code>
+        <code>  // drawing code</code>
+        <code>}</code>
+        <code>setInterval(draw, 10);</code>
+      </pre>
+      <footer class="notes">The drawing loop executes every 10 miliseconds - that gives us steady frame rate.</footer>
+    </section>
+  </div></div>
+
+  <div id="raf" class="slide"><div>
+    <section>
+      <header><h2>Request Animation Frame</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  // drawing code</code>
+        <code>  requestAnimationFrame(draw);</code>
+        <code>}</code>
+        <code>draw();</code>
+      </pre>
+      <footer class="notes">RequestAnimationFrame helps the browser render the game better than the fixed framerate we currently have implemented using setInterval. The draw() function is now getting executed again and again within a requestAnimationFrame() loop, but instead of the fixed 10 milliseconds frame rate, we are giving control of the framerate back to the browser. It will sync the framerate accordingly and render the shapes only when needed. This produces a more efficient, smoother animation loop than the older setInterval() method.</footer>
+    </section>
+  </div></div>
+
+  <div id="clear" class="slide"><div>
+    <section>
+      <header><h2>Redrawing</h2></header>
+      <img src="img/ball-trail.png" class="middle" alt="Breakout ball trail" />
+      <footer class="notes">Everything is there on the screen, so what's the problem? We're drawing new things on the screen, but we're not removing the previous ones.</footer>
+    </section>
+  </div></div>
+
+  <div id="clear" class="slide"><div>
+    <section>
+      <header><h2>Clear the Canvas</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  ctx.clearRect(0, 0, canvas.width, canvas.height);</code>
+        <code>  // drawing code</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">We don't have control over what was already painted on the screen, but we can clear everything and then paint new things on top of that - clearRect() does exactly that.</footer>
+    </section>
+  </div></div>
+
+  <div id="NAME" class="slide"><div>
+    <section>
+      <header><h2>Movement animation</h2></header>
+      <img src="img/ball-move.png" class="right" alt="Moving ball" />
+      <p><strong>Delta</strong>:<br /> move the ball <code>[x, y]</code><br /> for <code>dx</code> and <code>dy</code><br /> on every frame.</p>
+      <footer class="notes">Using the game loop and two variables we can apply those to the given position of the item we're drawing, making it looke like it's moving.</footer>
+    </section>
+  </div></div>
+
+  <div id="draw-xy" class="slide"><div>
+    <section>
+      <header><h2>Delta</h2></header>
+      <pre>
+        <code>function draw() {</code>
+        <code>  ctx.beginPath();</code>
+        <code>  ctx.arc(x, y, 10, 0, Math.PI*2);</code>
+        <code>  ctx.fillStyle = "#0095DD";</code>
+        <code>  ctx.fill();</code>
+        <code>  ctx.closePath();</code>
+        <code class="important">  x += dx;</code>
+        <code class="important">  y += dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">We will update x and y with our dx and dy variable on every frame, so the ball will be painted in the new position on every update.</footer>
+    </section>
+  </div></div>
+
+  <div id="NAME" class="slide"><div>
+    <section>
+      <header><h2>Create the player</h2></header>
+      <img src="img/player-static.png" class="middle" alt="paddle" />
+      <footer class="notes">Creating the player is just drawing a rectangle on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="NAME" class="slide"><div>
+    <section>
+      <header><h2>Keyboard and mouse input</h2></header>
+      <img src="img/keyboard-and-mouse.png" class="middle" alt="Keyboard and mouse" />
+      <footer class="notes">To actively take part in the game we have to be able to control the player.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-howto" class="slide"><div>
+    <section>
+      <header><h2>Control the player</h2></header>
+      <ul>
+        <li>Two variables for left and right button presses</li>
+        <li>Two event listeners for <code>keydown</code> and <code>keyup</code> events</li>
+        <li>Two functions handling the <code>keydown</code> and <code>keyup</code> events</li>
+        <li>Ability to actually move the paddle left and right</li>
+      </ul>
+      <footer class="notes">To control the paddle with the keyboard we have to have two variables to store the left and right key press, two event listeners that will handle those events, two functions that will execute the code and the ability to move the paddle on the screen.</footer>
+    </section>
+  </div></div>
+
+  <div id="NAME" class="slide"><div>
+    <section>
+      <header><h2>Keyboard event handler</h2></header>
+      <pre style="font-size: 20px;">
+        <code>var rightPressed = false, leftPressed = false;</code>
+        <code>document.addEventListener("keydown", keyDownHandler, false);</code>
+        <code>function keyDownHandler(e) {</code>
+        <code>  if(e.keyCode == 39) {</code>
+        <code>    rightPressed = true;</code>
+        <code>  }</code>
+        <code>  else if(e.keyCode == 37) {</code>
+        <code>    leftPressed = true;</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">We're setting up two variables, an event listener and the function that will be executed. When the key is pressed, the proper variable will be set to true.</footer>
+    </section>
+  </div></div>
+
+  <div id="paddle-move" class="slide"><div>
+    <section>
+      <header><h2>Move the paddle</h2></header>
+      <img src="img/player-dynamic.png" class="left" alt="paddle moving" />
+      <pre style="font-size: 20px;">
+        <code>if(rightPressed) {</code>
+        <code>  paddleX += 7;</code>
+        <code>}</code>
+        <code>else if(leftPressed) {</code>
+        <code>  paddleX -= 7;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">To move the paddle on the screen all you have to do is add or remove 7 pixels to the X position of the paddle.</footer>
+    </section>
+  </div></div>
+
+  <div id="mouse-listener" class="slide"><div>
+    <section>
+      <header><h2>Mouse event handler</h2></header>
+      <pre style="font-size: 20px;">
+        <code>document.addEventListener("mousemove", mouseMoveHandler, false);</code>
+        <code>function mouseMoveHandler(e) {</code>
+        <code>  var relativeX = e.clientX - canvas.offsetLeft;</code>
+        <code>  if(relativeX &gt; 0 &amp;&amp; relativeX &lt; canvas.width) {</code>
+        <code>    paddleX = relativeX - paddleWidth/2;</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Listening for mouse movement is even easier than listening for key presses: all we need is the listener for the mousemove event. We can update the paddle position based on the pointer coordinates — the following handler function will do exactly that. The paddle will now follow the position of the mouse cursor, but since we're restricting the movement to the size of the Canvas, it won't disappear completely off either side.</footer>
+    </section>
+  </div></div>
+
+  <div id="NAME" class="slide"><div>
+    <section>
+      <header><h2>Obstacles and collectibles</h2></header>
+      <img src="img/bricks.png" class="middle" alt="bricks" />
+      <footer class="notes">We can build the brick field to make the game more interesting. It's about drawing more rectangles in the given places.</footer>
+    </section>
+  </div></div>
+
+  <div id="NAME" class="slide"><div>
+    <section>
+      <header><h2>Collision detection</h2></header>
+      <img src="img/collision.png" class="middle" alt="collision" />
+      <footer class="notes">To make the game more interactive the ball should bounce off the bricks.</footer>
+    </section>
+  </div></div>
+
+  <div id="over-bounce" class="slide"><div>
+    <section>
+      <header><h2>Bouncing off the walls</h2></header>
+      <pre style="font-size: 20px;">
+        <code>if(x + dx &gt; canvas.width-ballRadius || x + dx &lt; ballRadius) {</code>
+        <code>  dx = -dx;</code>
+        <code>}</code>
+        <code>if(y + dy &gt; canvas.height-ballRadius || y + dy &lt; ballRadius) {</code>
+        <code>  dy = -dy;</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Thanks to this code the ball will bounce off all the walls, but we need something more for the bricks.</footer>
+    </section>
+  </div></div>
+
+  <div id="collision-logic" class="slide"><div>
+    <section>
+      <header><h2>Brick collision logic</h2></header>
+      <ul>
+        <li>The x position of the ball plus its radius is greater than the x position of the brick.</li>
+        <li>The x position of the ball plus its radius is less than the x position of the brick minus its width.</li>
+        <li>The y position of the ball plus its radius is greater than the y position of the brick.</li>
+        <li>The y position of the ball plus its radius is less than the y position of the brick minus its width.</li>
+      <ul>
+      <footer class="notes">Our collision won't be pixel perfect - instead, we will make it easier for us and simplify it. We will ommit the radius of the bll and check if the center of the ball collide with any given brick. Looping through all bricks on every frame is not very efficient and could be optimized, but our game is very simple and we don't need to do that. For now, the concept of collision detection itself is the key here.</footer>
+    </section>
+  </div></div>
+
+  <div id="over-hit" class="slide"><div>
+    <section>
+      <header><h2>Losing</h2></header>
+      <pre style="font-size: 20px;">
+        <code>if(y + dy &lt; ballRadius) {</code>
+        <code>  dy = -dy;</code>
+        <code>} else if(y + dy &gt; canvas.height-ballRadius) {</code>
+        <code>  if(x &gt; paddleX &amp;&amp; x &lt; paddleX + paddleWidth) {</code>
+        <code>    dy = -dy;</code>
+        <img src="img/lesson05.png" style="width: 40%;" class="right" alt="Screenshot 5" />
+        <code>  }</code>
+        <code>  else {</code>
+        <code>    alert("GAME OVER");</code>
+        <code>  }</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">Allow the player to hit the ball with the paddle - if the ball is between the starting and ending point of the paddle when it reaches the bottom edge, then bounce. Otherwise - game over.</footer>
+    </section>
+  </div></div>
+
+  <div id="score-win" class="slide"><div>
+    <section>
+      <header><h2>Winning</h2></header>
+      <pre>
+        <code>if(score == brickRowCount*brickColumnCount) {</code>
+        <code>  alert("YOU WIN, CONGRATULATIONS!");</code>
+        <code>}</code>
+      </pre>
+      <footer class="notes">If the score is the same as the number of all our bricks (we hit all of them), then the player won. Show the congrats message and then reload the page to play again.</footer>
+    </section>
+  </div></div>
+
+  <div id="NAME" class="slide"><div>
+    <section>
+      <header><h2>Next steps</h2></header>
+      <ul>
+        <li>Tinker with this game</li>
+        <li>Create another one</li>
+        <li>Check out popular frameworks</li>
+        <li>Read blogs, comment on forums, attend events</li>
+        <li>You're part of the community now!</li>
+      </ul>
+      <footer class="notes">Congratulations, now you know the basic logic behind the game Breakout. You can play with it, edit its contents, or create something new. You can also look for game frameworks to speed up the development. If you have any questions or problems you can always contact fellow developers - if you've come so far you are part of the community anyway.</footer>
+    </section>
+  </div></div>
+
+  <div id="thanks" class="slide"><div>
+    <section>
+      <header>
+        <h2>Thanks! Questions?</h2>
+      </header>
+      <ul class="nobull">
+        <li>{Your name and details}</li>
+        <li><strong>Slides</strong>: {slideurl}</li>
+      </ul>
+    <footer class="notes">Provide URL to the slides. Ask if there are any questions.</footer>
+    </section>
+  </div></div>
+
+  <!--
+    To hide progress bar from entire presentation
+    just remove “progress” element.
+    -->
+  <div class="progress"><div></div></div>
+  <script src="scripts/script.js"></script>
+  <!-- Copyright © 2010–2012 Vadim Makeev — pepelsbey.net -->
+</body>
+</html>
